@@ -17,8 +17,16 @@ public:
     ~VideoGame() {
         delete[] title;
     }
-    VideoGame(const VideoGame& other) {
-
+    VideoGame(const VideoGame& other){
+        title = new char[strlen(other.title) + 1];
+        strcpy(title, other.title);
+        pathcesCount = other.pathcesCount;
     }
+    VideoGame& operator=(const VideoGame& other) {
+        VideoGame copy(other);
+        swap(copy);
+        return *this;
+    }
+
     
 };
