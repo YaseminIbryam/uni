@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="SDP.vcxproj" Id="02105056-143a-4cc4-946c-324d58df0dd1" />
+</Solution>

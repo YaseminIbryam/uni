@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "SDP\\x64\\Debug\\LinkedList3.obj",
+            "outputs": [
+                "SDP\\x64\\Debug\\LinkedList3.cpp.obj.dt.module.json",
+                "SDP\\x64\\Debug\\LinkedList3.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

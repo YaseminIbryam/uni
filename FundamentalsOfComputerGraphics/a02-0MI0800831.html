@@ -1,0 +1,265 @@
+За задачата не е ползван ИИ
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+    
+            canvas {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script type="importmap">
+    			{ "imports": {
+    				"three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js"
+
+    			} }
+    		</script>
+    </head>
+    
+    <body>
+        <script type="module">
+            import * as THREE from "three";
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setAnimationLoop(drawFrame);
+            document.body.appendChild(renderer.domElement);
+
+            var scene = new THREE.Scene();
+
+            var aspect = window.innerWidth / window.innerHeight;
+            var camera = new THREE.PerspectiveCamera(30, aspect);
+            camera.position.set(6, 3, 10);
+            camera.lookAt(scene.position);
+
+            // Носеща конструкция
+            // the top of the floor
+            var floorLength = 5;
+            var floorWidth = 3;
+            var floorHeight = 0.1;
+            var geometry = new THREE.BoxGeometry(floorLength, floorHeight, floorWidth);
+            var material = new THREE.MeshPhysicalMaterial({color: "#F2F2F2"});
+            var floor = new THREE.Mesh(geometry, material);
+            var floorYPosition = -1.5
+            floor.position.set(0, floorYPosition, 0);
+            scene.add(floor);
+
+            // the bottom of the floor
+            var floor2Height = 0.3;
+            var floor2YPosition = floorYPosition - 0.2;
+            geometry = new THREE.BoxGeometry(floorLength, floor2Height, floorWidth);
+            material = new THREE.MeshPhysicalMaterial({ color: "#808080" });
+            var floor2 = new THREE.Mesh(geometry, material);
+            floor2.position.set(0, floor2YPosition, 0);
+            scene.add(floor2);
+
+            // backround plane
+            var planeHeight = floorWidth * 1.5;
+            geometry = new THREE.PlaneGeometry(floorLength, planeHeight);
+            material = new THREE.MeshBasicMaterial({ color: "white", side: THREE.DoubleSide });
+            var plane = new THREE.Mesh(geometry, material);
+            plane.position.set(0, floor2YPosition + planeHeight / 2 - floor2Height / 2, -floorWidth / 2)
+            scene.add(plane);
+
+            // Roof
+            var roofHeight = floorHeight * 2;
+            geometry = new THREE.BoxGeometry(floorLength, roofHeight, floorWidth);
+            material = new THREE.MeshPhysicalMaterial({ color: "#808080" });
+            var roof = new THREE.Mesh(geometry, material);
+            roof.position.set(0, floor2YPosition + planeHeight - roofHeight - floorHeight/2, 0);
+            scene.add(roof);
+
+            // COLUMNS
+            var columnWidth = 0.3;
+            var columnHeight = planeHeight - floor2Height - floorHeight - roofHeight;
+            material = new THREE.MeshStandardMaterial({ color: "#deb887" });
+            //Front
+            // with pyramid
+            var pyramidHeight = 1.5 * columnWidth;
+            var pyramidColumnHeight = columnHeight - pyramidHeight;
+            geometry = new THREE.BoxGeometry(columnWidth, pyramidColumnHeight, columnWidth);
+            // right front column
+            var column = new THREE.Mesh(geometry, material);
+            column.position.set(floorLength/2 - columnWidth/2, pyramidColumnHeight/2 + floorYPosition + floorHeight/2, floorWidth/2 - columnWidth/2 ); //  
+            scene.add(column);
+            // left front column
+            var column = new THREE.Mesh(geometry, material);
+            column.position.set(-(floorLength/2 - columnWidth/2), pyramidColumnHeight / 2 + floorYPosition + floorHeight / 2, floorWidth/2 - columnWidth/2);
+            scene.add(column);
+            //no pyramid
+            // middle front column
+            var middleColumnHeight = 1.5;
+            geometry = new THREE.BoxGeometry(columnWidth, middleColumnHeight, columnWidth);
+            var column = new THREE.Mesh(geometry, material);
+            column.position.set(0, middleColumnHeight / 2 + floorYPosition + floorHeight / 2, floorWidth / 2 - columnWidth / 2);
+            scene.add(column);
+            //Back
+            geometry = new THREE.BoxGeometry(columnWidth, columnHeight, columnWidth);
+            var backColumnHeight = planeHeight - floor2Height - floorHeight - roofHeight;
+            geometry = new THREE.BoxGeometry(columnWidth, backColumnHeight, columnWidth);
+            // right back column
+            var column = new THREE.Mesh(geometry, material);
+            column.position.set(floorLength/2 - columnWidth/2, columnHeight / 2 + floorYPosition + floorHeight / 2, -(floorWidth/2 - columnWidth/2)); //  
+            scene.add(column);
+            // left back column
+            var column = new THREE.Mesh(geometry, material);
+            column.position.set(-(floorLength/2 - columnWidth/2), columnHeight / 2 + floorYPosition + floorHeight / 2, -(floorWidth/2 - columnWidth/2));
+            scene.add(column);
+
+            // Перила
+
+            // RAILS
+            var railWidth = 0.15;
+            var bottomRailYPos = floorYPosition + 0.25;
+            var topRailYPos = -0.3;
+
+            // side rails
+            geometry = new THREE.BoxGeometry(railWidth, railWidth, floorWidth - 2*columnWidth);
+
+            // right bottom rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(floorLength/2 - columnWidth/2, bottomRailYPos, 0 );
+            scene.add(rail);
+            //right top rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(floorLength / 2 - columnWidth / 2, topRailYPos, 0);
+            scene.add(rail);
+            //left bottom rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(-(floorLength / 2 - columnWidth / 2), bottomRailYPos, 0);
+            scene.add(rail);
+            //left top rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(-(floorLength / 2 - columnWidth / 2), topRailYPos, 0);
+            scene.add(rail);
+
+            //front rails
+            geometry = new THREE.BoxGeometry(floorLength/2 - 1.5*columnWidth, railWidth, railWidth);
+            //right top rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(floorLength/4 - railWidth/2, topRailYPos, floorWidth/2 - columnWidth/2);
+            scene.add(rail);
+            //right bottom rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(floorLength / 4 - railWidth / 2, bottomRailYPos, floorWidth / 2 - columnWidth / 2);
+            scene.add(rail);
+            //left top rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(-(floorLength / 4 - railWidth / 2), topRailYPos, floorWidth / 2 - columnWidth / 2);
+            scene.add(rail);
+            //left bottom rail
+            var rail = new THREE.Mesh(geometry, material);
+            rail.position.set(-(floorLength / 4 - railWidth / 2), bottomRailYPos, floorWidth / 2 - columnWidth / 2);
+            scene.add(rail);
+
+            // HORIZONTAL INFILL BARS
+            var barWidth = 0.075;
+            var barHeight = topRailYPos - bottomRailYPos - railWidth;
+            geometry = new THREE.BoxGeometry(barWidth, barHeight, barWidth);
+            
+            // Side infill bars
+            // right
+            for (var i = -(floorWidth/2 - 1.5*columnWidth); i < (floorWidth / 2 - columnWidth); i+= columnWidth/2 ) {
+                var bar = new THREE.Mesh(geometry, material);
+                bar.position.set(floorLength / 2 - columnWidth / 2, (topRailYPos + bottomRailYPos) / 2, i);
+                scene.add(bar);
+            }
+            // left
+            for (var i = -(floorWidth / 2 - 1.5 * columnWidth); i < (floorWidth / 2 - columnWidth); i += columnWidth / 2) {
+                    var bar = new THREE.Mesh(geometry, material);
+                    bar.position.set(-(floorLength / 2 - columnWidth / 2), (topRailYPos + bottomRailYPos) / 2, i);
+                    scene.add(bar);
+            }
+
+            // front infill bars
+            // right
+            for (var i = 0.95*columnWidth; i < floorLength / 2 - columnWidth; i += columnWidth / 2) {
+                var bar = new THREE.Mesh(geometry, material);
+                bar.position.set(i , (topRailYPos + bottomRailYPos) / 2, floorWidth/2 - columnWidth/2);
+                scene.add(bar);
+            }
+            // left
+            for (var i = -0.95 * columnWidth; i > -(floorLength / 2 - columnWidth); i -= columnWidth / 2) {
+                    var bar = new THREE.Mesh(geometry, material);
+                    bar.position.set(i, (topRailYPos + bottomRailYPos) / 2, floorWidth / 2 - columnWidth / 2);
+                    scene.add(bar);
+            }
+
+
+            // Орнаменти
+            // Pyramids
+            geometry = new THREE.ConeGeometry(columnWidth, pyramidHeight, 4);
+            material = new THREE.MeshPhysicalMaterial({ color: "#89CFF0" });
+            // right
+            var pyramid = new THREE.Mesh(geometry, material);
+            pyramid.position.set(floorLength/2 - columnWidth/2, floorYPosition + floorHeight/2 + pyramidColumnHeight + pyramidHeight/2, floorWidth/2 - columnWidth/2);
+            scene.add(pyramid)
+            //left
+            var pyramid = new THREE.Mesh(geometry, material);
+            pyramid.position.set(-(floorLength/2 - columnWidth/2), floorYPosition + floorHeight/2 + pyramidColumnHeight + pyramidHeight/2, floorWidth/2 - columnWidth/2);
+            scene.add(pyramid)
+            // Sphere
+            geometry = new THREE.SphereGeometry(columnWidth/2);
+            material = new THREE.MeshPhysicalMaterial({ color: "#89CFF0" });
+            var sphere = new THREE.Mesh(geometry, material);
+            sphere.position.set(0 , floorYPosition + floorHeight / 2 + middleColumnHeight + columnWidth/2, floorWidth / 2 - columnWidth / 2);
+            scene.add(sphere);
+
+            // LAMP
+            // line
+            var lineHeight = 0.5;
+            var lineYPos = floorYPosition + planeHeight - lineHeight / 2 - roofHeight - floor2Height - floorHeight / 2
+            geometry = new THREE.BoxGeometry(0.01, lineHeight, 0.01);
+            material = new THREE.MeshPhysicalMaterial({ color: "white" });
+            var line = new THREE.Mesh(geometry, material);
+            line.position.set(0, lineYPos, 0);
+            scene.add(line);
+            //dome
+            geometry = new THREE.SphereGeometry(columnWidth, 32, 16, 0, Math.PI * 2, 0.1, Math.PI/2);
+            material = new THREE.MeshPhysicalMaterial({ color: "gold" });
+            var dome = new THREE.Mesh(geometry, material);
+            dome.position.set(0, lineYPos - lineHeight/2 - columnWidth);
+            scene.add(dome);
+            //bulb
+            geometry = new THREE.SphereGeometry(columnWidth/3);
+            material = new THREE.MeshPhysicalMaterial({ color: "#fffee0" });
+            var bulb = new THREE.Mesh(geometry, material);
+            bulb.position.set(0, lineYPos - lineHeight/2 - columnWidth/3, 0);
+            scene.add(bulb);
+
+
+            // DOOR
+            geometry = new THREE.BoxGeometry(floorLength/3, floorWidth,0.01);
+            material = new THREE.MeshBasicMaterial({ color: "#7B3F00", side: THREE.DoubleSide });
+            var door = new THREE.Mesh(geometry, material);
+            door.position.set(0, floorYPosition + floorWidth / 2 + floorHeight / 2, -floorWidth / 2)
+            scene.add(door);
+            
+
+
+            //lamp light 
+            var lampLight = new THREE.PointLight('#fffee0', 10);
+            lampLight.position.set(0, lineYPos - lineHeight / 2 - columnWidth / 3, 0);
+            bulb.add(lampLight);
+
+            var light = new THREE.PointLight('white', 10);
+            light.position.set(floorLength*0.75, 2, floorWidth);
+            scene.add(light);
+
+            renderer.render(scene, camera);
+
+            function drawFrame(t) {
+                // за ротация
+                // scene.rotation.y = t / 3000; 
+                // scene.rotation.x = -t /4000;
+                renderer.render(scene, camera);
+            }
+
+
+        </script>
+    </body>
+</html>
