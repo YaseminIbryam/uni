@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+
+<!-- Трите имена на студента -->
+
+<html>
+	<head>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+		<script type="importmap">
+			{ "imports": {
+				"three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.webgpu.min.js",
+				"three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.webgpu.min.js",
+				"three/tsl": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.tsl.min.js",
+				"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/",
+				"villa": "https://boytchev.github.io/CourseOKG/villa/villa.js"
+			} }
+		</script>
+	</head>
+	
+	<body>
+		<script type="module">
+			import * as THREE from "three";
+			import {villa, renderer, scene, camera, light, controls} from "villa";
+
+			villa( '0MI0800831' ); // да е реалният фак.№
+				
+			// 1. преименувайте файла на villa-g-fn.html,
+			//    g=номер на група, а fn=факултетен номер
+			//    също попълнете коментара на третия ред!
+			//
+			// 2. първо сменете параметъра на villa( ) да
+			//    е факултетният ви номер - по този начин
+			//    ще се генерират сцена, земя и контур на
+			//    вилата ви, която ще трябва да направите
+			//
+			// 3. едва тогава почвайте да строите стените
+			//    и да добавяте исканите обекти по стаите
+			//
+			// 4. кубът по-долу е само за пример как може
+			//    да се слагат обекти, които правят сянка
+			//
+			// 5. белите квадратчета имат размер 20x20 см
+			//
+			// 6. горе в import са променливите renderer,
+			//    scene, camera, light и controls. Можете
+			//    да ги ползвате в кода при реална нужда.
+			//
+			// 7. горд съм как коментарите са равно дълги
+			
+			//helpers - DELETE IN THE END
+				// 1. Bright, high-contrast positive axes
+				const posAxes = new THREE.AxesHelper(10);
+				posAxes.setColors(
+					new THREE.Color(0xff3333), // Bright Red (+X)
+					new THREE.Color(0x33ff33), // Bright Green (+Y)
+					new THREE.Color(0x3399ff)  // Bright Sky Blue (+Z)
+				);
+				scene.add(posAxes);
+
+				// 2. Darker, muted negative axes
+				const negAxes = new THREE.AxesHelper(10);
+				negAxes.scale.set(-1, -1, -1);
+				negAxes.setColors(
+					new THREE.Color(0x551111), // Dark Red (-X)
+					new THREE.Color(0x115511), // Dark Green (-Y)
+					new THREE.Color(0x112255)  // Dark Navy Blue (-Z)
+				);
+				scene.add(negAxes);
+			// Червен куб 2х2х2 метра - мостра, как да се
+			// използват Three.js-ски обекти. Махнете го!
+			
+			var geometry = new THREE.BoxGeometry( 2, 2, 2 ),
+				material = new THREE.MeshLambertMaterial( {color: 'crimson'} );
+				
+			var cube = new THREE.Mesh( geometry, material );
+				cube.position.set( 0, 1, 0 );
+				cube.receiveShadow = true;
+				cube.castShadow = true;
+			
+			scene.add( cube );
+
+		</script>
+		
+	</body>
+</html>
+
+
